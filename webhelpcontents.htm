@@ -1,0 +1,318 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<title>魔物娘图鉴及世界导游书整理</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css"> 
+<!-- 
+.selected {font-weight: normal;background-color: #E2E2E2;padding:0px,2px,0px,2px;}
+.unselected { font-weight: normal;padding:0px,2px,0px,2px;}
+.hand { cursor: hand; }
+.p {height: 16px;width: 16px;vertical-align: middle;border: 0;}
+div,body { font-family: Tahoma, Verdana; font-size: 11px; }
+A:link {text-decoration: none; color:#000000}
+A:visited {text-decoration: none; color: #000000}
+A:active {text-decoration: none; color: #000000 }
+A:hover {text-decoration: none; color: #FF0000 }
+
+-->
+</style>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var cl,pn,pm,bl;
+var path = 'icons/';
+var pos = 0;
+var icon;
+var tar = 'content';
+var display;
+var imgi;
+var AutoCollapse;
+var LastSelected = -1;
+var loaded = false;
+var max;
+var divlist;
+
+function SetEnv(v,a){
+
+if(v==0){ 
+	pn = [['daplus.gif','daminus.gif'],['tplus.gif','tminus.gif'],['uaplus.gif','uaminus.gif'],['splus.gif','sminus.gif']];
+	PreloadImg('downangle.gif','tshaped.gif','upangle.gif','sline.gif','daplus.gif','daminus.gif','tplus.gif','tminus.gif','uaplus.gif','uaminus.gif','splus.gif','sminus.gif','blank.gif','line.gif');
+}else{
+	pn = [['plus.gif','minus.gif']];
+	PreloadImg('plus.gif','minus.gif','blank.gif');
+
+}
+AutoCollapse = a;
+}
+
+ function PreloadImg(){
+if (document.images) { 
+	var imgs = PreloadImg.arguments; 
+	var pload = new Array();
+	for (var i=0; i<imgs.length; i++) { 
+		pload[i] = new Image; 
+		pload[i].src = path + imgs[i]; 
+	} 
+} 
+ } 
+
+function get(o){
+var x;
+if(document.all) x=document.all[o]; 
+if(document.getElementById) x=document.getElementById(o);
+
+return x;
+}
+
+
+function pnImg(img){
+var i,j;
+for(i=0;i<=3;i++){
+	for(j=0;j<=1;j++){
+	if(img.substr(img.lastIndexOf('/') + 1)== pn[i][j]){
+		return i;
+	}
+	}
+}
+}
+function icon(img){
+var f;
+f = img.substr(img.lastIndexOf('/') + 1);
+if( f=='1.gif' || f=='2.gif'){
+	return ['1.gif','2.gif'];
+}
+if( f=='3.gif' || f=='4.gif'){
+	return ['3.gif','4.gif'];
+}
+if( f=='5.gif' || f=='6.gif'){
+	return ['5.gif','6.gif'];
+}
+if( f=='7.gif' || f=='8.gif'){
+	return ['7.gif','8.gif'];
+}
+return [f,f];
+}
+
+function show(id){
+get('d' + id).style.display='block';
+if(get('imgn' + id )) get('imgn' + id ).src= path + pn[pnImg(get('imgn' + id ).src)][1];
+get('img' + id ).src= path + icon(get('img' + id ).src)[1];
+
+}
+
+function collapse(id){
+get('d' + id ).style.display='none';
+if(get('imgn' + id )) get('imgn' + id ).src= path + pn[pnImg(get('imgn' + id ).src)][0];
+get('img' + id ).src= path + icon(get('img' + id ).src)[0];
+
+}
+
+function collapseAll(){
+var i;
+var o;
+for(i=0;i<=divlist.length-1;i++){
+	if(o=get('d' + divlist[i])){
+		if(o.style.display!='none'){ 
+			collapse(divlist[i]);
+		}
+	}
+}
+}
+
+function showAll(){
+var i;
+var o;
+for(i=0;i<=divlist.length-1;i++){
+	if(o=get('d' + divlist[i])){
+		if(o.style.display!='block'){ 
+			show(divlist[i]);
+		}
+	}
+}
+}
+
+function unselectAll(){
+var i=0;
+while(get("l" + i)){
+	get("l" + i).className = "unselected";
+	i++;
+}
+}
+
+function clickNode(index){
+var e;
+
+e = get("l" + index);
+if(e==null) return;
+e = e.parentNode;
+if(e.nodeName == 'A'){
+	if(e.href!= window.location.href + '#'){
+		parent.parent.content.location.href = e.href;
+	}else{
+		selectNode(index);
+	}
+	e.onclick;
+}
+}
+
+function showParent(ele){
+var e;
+e = ele.parentNode;
+
+if(e==null) return;
+
+if(e.nodeName == 'DIV'){
+	if(e.id!='') show(e.id.substring(1,e.id.length ));
+}else if(e.nodeName == 'A'){
+
+}
+showParent(e);
+}
+
+function showNode(index){
+showParent(get("l" + index));
+LinkClick(index);
+}
+
+function selectNode(index){
+if(LastSelected!=index){
+//collapseAll();
+showParent(get("l" + index));
+LinkClick(index);
+get('l' + index).scrollIntoView(true);
+
+
+//alert(get('l' + index).offsetHeight + '|' + document.body.clientHeight + '|' + document.body.offsetHeight);
+window.scrollTo(0,document.body.scrollTop); // - document.body.clientHeight /3);
+}
+}
+
+
+function NodeClick(id){
+if(get('d' + id ).style.display=='none'){
+	show(id);
+}else{
+	collapse(id);
+}
+return false;
+}
+
+function LinkDblClick(id){
+if(!AutoCollapse){
+	if(get('d' + id ).style.display=='none'){
+		show(id);
+	}else{
+		collapse(id);
+	}
+}
+return false;
+}
+
+function LinkClick(index,hasChild,r){
+if(AutoCollapse && hasChild){
+	if(get('d' + index ).style.display=='none'){
+		collapseAll()
+		showParent(get('l' + index));
+		show(index);
+	}else{
+		collapseAll()
+		showParent(get('l' + index));	
+		collapse(index);
+	}
+}
+if(LastSelected!=-1){
+	get('l' + LastSelected).className = "unselected";
+}
+get('l' + index).className = "selected";
+LastSelected = index;
+return r;
+}
+
+function body_onmousemove(event){
+if(typeof(document.body.scrollTop)!='undefined'){
+if(parseInt(event.clientX)<5){
+window.scroll(0,document.body.scrollTop);}}
+if(typeof(window.scrollY)!='undefined'){
+if(parseInt(event.clientX)<5){
+window.scrollTo(0,window.scrollY);}}
+}
+
+window.defaultStatus = '';
+
+function body_onload(){
+get('loading').style.display='none';
+loaded = true;
+if(parent.parent.content.document.readyState){
+	if(parent.parent.content.document.readyState == 'complete'){
+		try{parent.parent.content.syn();}catch(e){};
+	}
+}else{
+	if(parent.parent.contentLoaded){
+		try{parent.parent.content.syn();}catch(e){};
+	}
+}
+}
+
+//-->
+</SCRIPT>
+<script language="JavaScript" src="languages.js"></script>
+
+</head>
+
+<body bgcolor="#ffffff" leftmargin="5" topmargin="5" marginwidth="5" marginheight="5" onmousemove="body_onmousemove(event);" onload="body_onload();">
+<div id="loading"><font color="#FF0000" size="1"> Loading table of contents... 
+</font><br><br></div>
+<script>SetEnv(0,false)</script><div><nobr><img src="icons/downangle.gif" class="p"><a href="topics/写在前面.htm" onclick="return LinkClick('0',false,true)" target="content" title="写在前面" onmousemove="window.status='写在前面'"><img src="icons/11.gif" class="p"> <span id="l0" class="unselected">写在前面</span></a></nobr></div>
+<div><nobr><a href="#" onClick="return NodeClick('1')"><img id="imgn1" src="icons/tplus.gif" class="p"></a><a href="topics/MGE1/《魔物娘图鉴》.htm" onclick="return LinkClick('1',true,true)" onDblClick="return LinkDblClick('1')" target="content" title="《魔物娘图鉴》" onmousemove="window.status='《魔物娘图鉴》'"><img id="img1" src="icons/1.gif" class="p"> <span id="l1" class="unselected">《魔物娘图鉴》</span></a></nobr></div>
+<div id="d1" style="display:none"><div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/目录1.htm" onclick="return LinkClick('2',false,true)" target="content" title="目录" onmousemove="window.status='目录'"><img src="icons/11.gif" class="p"> <span id="l2" class="unselected">目录</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/资料魔物.htm" onclick="return LinkClick('3',false,true)" target="content" title="资料·魔物" onmousemove="window.status='资料·魔物'"><img src="icons/11.gif" class="p"> <span id="l3" class="unselected">资料·魔物</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/01魅魔.htm" onclick="return LinkClick('4',false,true)" target="content" title="1.魅魔" onmousemove="window.status='1.魅魔'"><img src="icons/11.gif" class="p"> <span id="l4" class="unselected">1.魅魔</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/02次级魅魔.htm" onclick="return LinkClick('5',false,true)" target="content" title="2.次级魅魔" onmousemove="window.status='2.次级魅魔'"><img src="icons/11.gif" class="p"> <span id="l5" class="unselected">2.次级魅魔</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/资料魔物化.htm" onclick="return LinkClick('6',false,true)" target="content" title="资料·魔物化" onmousemove="window.status='资料·魔物化'"><img src="icons/11.gif" class="p"> <span id="l6" class="unselected">资料·魔物化</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/资料元精与魔物的魔力.htm" onclick="return LinkClick('7',false,true)" target="content" title="资料·元精与魔物的魔力" onmousemove="window.status='资料·元精与魔物的魔力'"><img src="icons/11.gif" class="p"> <span id="l7" class="unselected">资料·元精与魔物的魔力</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/03史莱姆.htm" onclick="return LinkClick('8',false,true)" target="content" title="3.史莱姆" onmousemove="window.status='3.史莱姆'"><img src="icons/11.gif" class="p"> <span id="l8" class="unselected">3.史莱姆</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/04红色史莱姆.htm" onclick="return LinkClick('9',false,true)" target="content" title="4.红色史莱姆" onmousemove="window.status='4.红色史莱姆'"><img src="icons/11.gif" class="p"> <span id="l9" class="unselected">4.红色史莱姆</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/05史莱姆女王.htm" onclick="return LinkClick('10',false,true)" target="content" title="5.史莱姆女王" onmousemove="window.status='5.史莱姆女王'"><img src="icons/11.gif" class="p"> <span id="l10" class="unselected">5.史莱姆女王</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/06哥布林.htm" onclick="return LinkClick('11',false,true)" target="content" title="6.哥布林" onmousemove="window.status='6.哥布林'"><img src="icons/11.gif" class="p"> <span id="l11" class="unselected">6.哥布林</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/07大哥布林.htm" onclick="return LinkClick('12',false,true)" target="content" title="7.大哥布林" onmousemove="window.status='7.大哥布林'"><img src="icons/11.gif" class="p"> <span id="l12" class="unselected">7.大哥布林</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/08狼人.htm" onclick="return LinkClick('13',false,true)" target="content" title="8.狼人" onmousemove="window.status='8.狼人'"><img src="icons/11.gif" class="p"> <span id="l13" class="unselected">8.狼人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/09猫人.htm" onclick="return LinkClick('14',false,true)" target="content" title="9.猫人" onmousemove="window.status='9.猫人'"><img src="icons/11.gif" class="p"> <span id="l14" class="unselected">9.猫人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/10兔人.htm" onclick="return LinkClick('15',false,true)" target="content" title="10.兔人" onmousemove="window.status='10.兔人'"><img src="icons/11.gif" class="p"> <span id="l15" class="unselected">10.兔人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/11绵羊人.htm" onclick="return LinkClick('16',false,true)" target="content" title="11.绵羊人" onmousemove="window.status='11.绵羊人'"><img src="icons/11.gif" class="p"> <span id="l16" class="unselected">11.绵羊人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/12阿娜温.htm" onclick="return LinkClick('17',false,true)" target="content" title="12.阿娜温" onmousemove="window.status='12.阿娜温'"><img src="icons/11.gif" class="p"> <span id="l17" class="unselected">12.阿娜温</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/13曼德拉草.htm" onclick="return LinkClick('18',false,true)" target="content" title="13.曼德拉草" onmousemove="window.status='13.曼德拉草'"><img src="icons/11.gif" class="p"> <span id="l18" class="unselected">13.曼德拉草</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/14玛坦戈.htm" onclick="return LinkClick('19',false,true)" target="content" title="14.玛坦戈" onmousemove="window.status='14.玛坦戈'"><img src="icons/11.gif" class="p"> <span id="l19" class="unselected">14.玛坦戈</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/15树妖.htm" onclick="return LinkClick('20',false,true)" target="content" title="15.树妖" onmousemove="window.status='15.树妖'"><img src="icons/11.gif" class="p"> <span id="l20" class="unselected">15.树妖</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/16蜜蜂.htm" onclick="return LinkClick('21',false,true)" target="content" title="16.蜜蜂" onmousemove="window.status='16.蜜蜂'"><img src="icons/11.gif" class="p"> <span id="l21" class="unselected">16.蜜蜂</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/17大黄蜂.htm" onclick="return LinkClick('22',false,true)" target="content" title="17.大黄蜂" onmousemove="window.status='17.大黄蜂'"><img src="icons/11.gif" class="p"> <span id="l22" class="unselected">17.大黄蜂</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/18灰熊.htm" onclick="return LinkClick('23',false,true)" target="content" title="18.灰熊" onmousemove="window.status='18.灰熊'"><img src="icons/11.gif" class="p"> <span id="l23" class="unselected">18.灰熊</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/19哈比.htm" onclick="return LinkClick('24',false,true)" target="content" title="19.哈比" onmousemove="window.status='19.哈比'"><img src="icons/11.gif" class="p"> <span id="l24" class="unselected">19.哈比</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/20黑色哈比.htm" onclick="return LinkClick('25',false,true)" target="content" title="20.黑色哈比" onmousemove="window.status='20.黑色哈比'"><img src="icons/11.gif" class="p"> <span id="l25" class="unselected">20.黑色哈比</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/22半兽人.htm" onclick="return LinkClick('26',false,true)" target="content" title="21.鸡蛇兽" onmousemove="window.status='21.鸡蛇兽'"><img src="icons/11.gif" class="p"> <span id="l26" class="unselected">21.鸡蛇兽</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/22半兽人.htm" onclick="return LinkClick('27',false,true)" target="content" title="22半兽人" onmousemove="window.status='22半兽人'"><img src="icons/11.gif" class="p"> <span id="l27" class="unselected">22半兽人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/24阿拉克尼.htm" onclick="return LinkClick('28',false,true)" target="content" title="23.食人魔" onmousemove="window.status='23.食人魔'"><img src="icons/11.gif" class="p"> <span id="l28" class="unselected">23.食人魔</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/24阿拉克尼.htm" onclick="return LinkClick('29',false,true)" target="content" title="24.阿拉克尼" onmousemove="window.status='24.阿拉克尼'"><img src="icons/11.gif" class="p"> <span id="l29" class="unselected">24.阿拉克尼</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/25拉米亚.htm" onclick="return LinkClick('30',false,true)" target="content" title="25.拉米亚" onmousemove="window.status='25.拉米亚'"><img src="icons/11.gif" class="p"> <span id="l30" class="unselected">25.拉米亚</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/26美杜莎.htm" onclick="return LinkClick('31',false,true)" target="content" title="26.美杜莎" onmousemove="window.status='26.美杜莎'"><img src="icons/11.gif" class="p"> <span id="l31" class="unselected">26.美杜莎</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/27厄喀德娜.htm" onclick="return LinkClick('32',false,true)" target="content" title="27.厄喀德娜" onmousemove="window.status='27.厄喀德娜'"><img src="icons/11.gif" class="p"> <span id="l32" class="unselected">27.厄喀德娜</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/MGE1/28蜥蜴人.htm" onclick="return LinkClick('33',false,true)" target="content" title="28.蜥蜴人" onmousemove="window.status='28.蜥蜴人'"><img src="icons/11.gif" class="p"> <span id="l33" class="unselected">28.蜥蜴人</span></a></nobr></div>
+<div><nobr><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/MGE1/29沙罗曼蛇.htm" onclick="return LinkClick('34',false,true)" target="content" title="29.沙罗曼蛇" onmousemove="window.status='29.沙罗曼蛇'"><img src="icons/11.gif" class="p"> <span id="l34" class="unselected">29.沙罗曼蛇</span></a></nobr></div>
+</div><div><nobr><a href="#" onClick="return NodeClick('35')"><img id="imgn35" src="icons/uaplus.gif" class="p"></a><a href="topics/WG3/WG3.htm" onclick="return LinkClick('35',true,true)" onDblClick="return LinkDblClick('35')" target="content" title="《世界导游书3 萨巴斯魔导书》" onmousemove="window.status='《世界导游书3 萨巴斯魔导书》'"><img id="img35" src="icons/1.gif" class="p"> <span id="l35" class="unselected">《世界导游书3 萨巴斯魔导书》</span></a></nobr></div>
+<div id="d35" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('36')"><img id="imgn36" src="icons/tplus.gif" class="p"></a><a href="topics/WG3/萨巴斯名簿-募集事项.htm" onclick="return LinkClick('36',true,true)" onDblClick="return LinkDblClick('36')" target="content" title="萨巴斯名簿 背德的魔兽与小小魔女的集会" onmousemove="window.status='萨巴斯名簿 背德的魔兽与小小魔女的集会'"><img id="img36" src="icons/1.gif" class="p"> <span id="l36" class="unselected">萨巴斯名簿 背德的魔兽与小小魔女的集会</span></a></nobr></div>
+<div id="d36" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-魔王军萨巴斯.htm" onclick="return LinkClick('37',false,true)" target="content" title="魔王军萨巴斯" onmousemove="window.status='魔王军萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l37" class="unselected">魔王军萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-库洛菲尔·萨巴斯.htm" onclick="return LinkClick('38',false,true)" target="content" title="库洛菲尔·萨巴斯" onmousemove="window.status='库洛菲尔·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l38" class="unselected">库洛菲尔·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-莫莫妮卡·萨巴斯.htm" onclick="return LinkClick('39',false,true)" target="content" title="莫莫妮卡·萨巴斯" onmousemove="window.status='莫莫妮卡·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l39" class="unselected">莫莫妮卡·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-希洛克托·萨巴斯.htm" onclick="return LinkClick('40',false,true)" target="content" title="希洛克托·萨巴斯" onmousemove="window.status='希洛克托·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l40" class="unselected">希洛克托·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-露喵·露喵·萨巴斯.htm" onclick="return LinkClick('41',false,true)" target="content" title="露喵·露喵·萨巴斯" onmousemove="window.status='露喵·露喵·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l41" class="unselected">露喵·露喵·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-萝普洛特·萨巴斯.htm" onclick="return LinkClick('42',false,true)" target="content" title="萝普洛特·萨巴斯" onmousemove="window.status='萝普洛特·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l42" class="unselected">萝普洛特·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/萨巴斯名簿-玛露妮·萨巴斯.htm" onclick="return LinkClick('43',false,true)" target="content" title="玛露妮·萨巴斯" onmousemove="window.status='玛露妮·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l43" class="unselected">玛露妮·萨巴斯</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/line.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/WG3/萨巴斯名簿-古雷伊莉雅·萨巴斯.htm" onclick="return LinkClick('44',false,true)" target="content" title="古雷伊莉雅·萨巴斯" onmousemove="window.status='古雷伊莉雅·萨巴斯'"><img src="icons/11.gif" class="p"> <span id="l44" class="unselected">古雷伊莉雅·萨巴斯</span></a></nobr></div>
+</div><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/目录.htm" onclick="return LinkClick('45',false,true)" target="content" title="目录" onmousemove="window.status='目录'"><img src="icons/11.gif" class="p"> <span id="l45" class="unselected">目录</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><img src="icons/tshaped.gif" class="p"><a href="topics/WG3/魔力概论.htm" onclick="return LinkClick('46',false,true)" target="content" title="魔力概论" onmousemove="window.status='魔力概论'"><img src="icons/11.gif" class="p"> <span id="l46" class="unselected">魔力概论</span></a></nobr></div>
+<div><nobr><img src="icons/blank.gif" class="p"><a href="#" onClick="return NodeClick('47')"><img id="imgn47" src="icons/uaplus.gif" class="p"></a><a href="topics/WG3/大魔法辞典.htm" onclick="return LinkClick('47',true,true)" onDblClick="return LinkDblClick('47')" target="content" title="大魔法辞典" onmousemove="window.status='大魔法辞典'"><img id="img47" src="icons/1.gif" class="p"> <span id="l47" class="unselected">大魔法辞典</span></a></nobr></div>
+<div id="d47" style="display:none"><div><nobr><img src="icons/blank.gif" class="p"><img src="icons/blank.gif" class="p"><img src="icons/upangle.gif" class="p"><a href="topics/WG3/古式魔法.htm" onclick="return LinkClick('48',false,true)" target="content" title="古式魔法" onmousemove="window.status='古式魔法'"><img src="icons/11.gif" class="p"> <span id="l48" class="unselected">古式魔法</span></a></nobr></div>
+</div></div><script>divlist = [1,35,36,47]</script>
+</body>
+</html>
